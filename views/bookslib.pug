@@ -1,0 +1,96 @@
+extends layout
+
+block content
+    script(src="/javascripts/bookslib.js")
+    link(rel='stylesheet', href='/stylesheets/bookslib_page.css')
+    table
+        - if (isBackBttn) {
+        tr
+            td
+                button(class="w3-btn w3-white w3-border w3-border-grey w3-round-xlarge",
+                onclick="window.location.href='http://localhost:3000/books';")
+                    img(src='/images/leftarrow.png', width=20, height=20)
+        - }
+        tr
+            td
+                table(class="w3-table-all w3-hoverable w3-card-4 w3-centered")
+                    tr
+                        th Индекс
+                        th Автор
+                        th Имя
+                        th Дата выпуска
+                        th Наличие
+                        th Дата возврата
+                        td
+                    - for(var i = 0; i < books.length; i++) {
+                    - var redirect=`window.location.href='http://localhost:3000/books/${books[i].ind}'`;
+                      tr
+                          td(onclick=redirect)= books[i].ind + 1
+                          td(onclick=redirect)= books[i].author
+                          td(onclick=redirect)= books[i].name
+                          td(onclick=redirect)= books[i].release
+                          - if (books[i].inStock) {
+                            td(onclick=redirect) +
+                          - } else {
+                            td(onclick=redirect) -
+                          - }
+                          td(onclick=redirect)= books[i].returnDate
+                          td
+                              button(onclick=`deleteBook(${i});`)
+                                img(src='/images/cancel.png', width=15, height=15)
+                      - }
+
+            td
+                ul
+                    li
+                        button(class="w3-btn w3-white w3-border w3-border-grey w3-round-xlarge",
+                        onclick='checkFilterForm();', id="filterbtn") Фильтрация
+                    li
+                        button(class="w3-btn w3-white w3-border w3-border-grey w3-round-xlarge",
+                        onclick='checkAddForm();', id="addbtn") Добавить книгу
+            td(id="inptable", hidden)
+                table(class="w3-table-all w3-hoverable w3-card-4 w3-centered")
+                    tr
+                        th Автор
+                        td
+                            input(name="name", id="inp1", onkeyup='checkFieldsToActivateButton();')
+                    tr
+                        th Имя
+                        td
+                            input(name="author", id="inp2", onkeyup='checkFieldsToActivateButton();')
+                    tr
+                        th Год выпуска
+                        td
+                            input(name="release", id="inp3", onkeyup='checkFieldsToActivateButton();')
+                    tr
+                        td(colspan="2")
+                            button(class="w3-btn w3-white w3-border w3-border-grey w3-round-xlarge",
+                            onclick='addBook();', id="btn", disabled) Ok
+            td(id="checkbox", hidden)
+                table
+                    tr
+                        td
+                            table(class="w3-table-all w3-hoverable w3-card-4")
+                                tr
+                                    td
+                                        input(id="inp4", name="inStock", type="radio", value=0, checked)
+                                        =" Книга отсутствует"
+                                tr
+                                    td
+                                        input(id="inp5", name="inStock", type="radio", value=1)
+                                        =" Книга присутствует"
+                        td
+                            table(class="w3-table-all w3-hoverable w3-card-4")
+                                tr
+                                    td
+                                        input(id="inp6", name="overdue", type="radio", value=0, checked)
+                                        =" Просрочена"
+                                tr
+                                    td
+                                        input(id="inp7", name="overdue", type="radio", value=1)
+                                        =" Не просрочена"
+                    tr
+                        td
+                            button(class="w3-btn w3-white w3-border w3-border-grey w3-round-xlarge", onclick="bookFilterByInStock();") Ok
+                        td
+                            button(class="w3-btn w3-white w3-border w3-border-grey w3-round-xlarge", onclick="bookFilterByOverdue();") Ok
